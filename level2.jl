@@ -13,31 +13,55 @@
 a = 1
 b = 2.0
 c = a + b
-
+typeof(a)
+typeof(b)
+typeof(c)
 """
 написать тип, параметризованный другим типом
 """
-
+struct ParamTypes{T<:Real}
+    a::T
+    b::T
+end
+ParamTypes(10,5)
 """
 написать функцию для двух аругментов, не указывая их тип,
 и вторую функцию от двух аргментов с конкретными типами,
 дать пример запуска
 """
-
+sum_func(a,b) = a + b
+sum2_func(a::Float64,b::Int) = a + b
+sum_func(1,4) #вывод Int 5
+sum2_func(1.0,4) #вывод Float64 5.0
 """
 абстрактный тип - ключевое слово?
 примитивный тип - ключевое слово?
 композитный тип - ключевое слово?
 """
+abstract type NewAbstractTypes <:Real end #абстрактный тип
+NewAbstractTypes <: Real
 
+primitive type Int8 <: Signed 8 end #примитивный тип
+
+struct Numbers #композитный тип
+    a::Float64
+    b::Int
+end
+new_number = Numbers(5.2, 100)
+typeof(new_number)
+new_number.a
 """
 написать один абстрактный тип и два его подтипа (1 и 2)
 написать функцию над абстрактным типом, и функцию над её подтипом-1
 выполнить функции над объектами подтипов 1 и 2 и объяснить результат
 (функция выводит произвольный текст в консоль)
 """
-
-
+#abstract type Main_type end
+#abstract type first_type <: AbsParentType end
+#abstract type second_type <: AbsParentType end
+#abs_first_function(a::Main_type) = print(a)
+#abs_second_function(a::first_type) = print(a)
+#abs_first_function()
 """
 ======================================================================
 2. Функции:
@@ -50,29 +74,41 @@ c = a + b
 """
 пример обычной функции
 """
-
+function new_function(a)
+    print("press $a")
+end
+new_function("A")
 """
 пример лямбда-функции (аннонимной функции)
 """
-
+lambda_function = x -> 2*x
+lambda_function(25) #вывод 50
 """
 пример функции с переменным количеством аргументов
 """
-
+varargFunction(a,b,x...) = (a,b,x)
+varargFunction(10, 20, 30)
 """
 пример функции с именованными аргументами
 """
-
+function key_function(a; b=200)
+    a = a-a*b/100
+end
 """
 функции с переменным кол-вом именованных аргументов
 """
-
+function key2_function(a; b...)
+    a = a-a*b/100
+end 
 """
 передать кортеж в функцию, которая принимает на вход несколько аргументов
 присвоить кортеж результату функции, которая возвращает несколько аргументов
 использовать splatting - деструктуризацию кортежа в набор аргументов
 """
-
+function tuple_function(a,b,(c,d,e))
+    return (c+a,d*b,e*(a+b))
+end
+tuple_function(10,12,(23,34,56))
 """
 ======================================================================
 3. loop fusion, broadcast, filter, map, reduce
@@ -82,22 +118,29 @@ c = a + b
 перемножить все элементы массива
 с помощью reduce
 """
-
+reduce(op, itr; [init])
+reduce(*,[1;2;3])
 """
 написать функцию от одного аргумента и запустить ее по всем элементам массива
 с помощью точки (broadcast)
 c помощью map
 указать, чем это лучше явного цикла?
 """
-
+my_function(a) = a*a
+vector = [2,2,3,3]
+my_function.(vector)
+map(my_function,vector)
 """
 перемножить вектор-строку [1 2 3] на вектор-столбец [10,20,30] и объяснить результат
 """
-
+vector_string = [2 2 1]
+vector_column = [10,20,30]
+result = vector_string*vector_column
 """
 в одну строку выбрать из массива [1, -2, 2, 3, 4, -5, 0] только четные и положительные числа
 """
-
+#vec = [1, -2, 2, 3, 4, -5, 0]
+filter(x -> iseven(x) && x>0,[1, -2, 2, 3, 4, -5, 0]) 
 
 """
 ======================================================================
@@ -108,7 +151,9 @@ c помощью map
 написать свой тип ленивого массива, каждый элемент которого
 вычисляется при взятии индекса (getindex) по формуле (index - 1)^2
 """
-
+mutable struct myArray
+    index::Int
+end
 """
 Написать два типа объектов команд, унаследованных от AbstractCommand,
 которые применяются к массиву:
